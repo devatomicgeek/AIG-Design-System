@@ -1,0 +1,21 @@
+{
+  "id": "stefanos",
+  "name": "Stefano’s",
+  "variations": [],
+  "colors": [],
+  "fonts": [],
+  "icons": [],
+  "safe": {
+    "variation": "",
+    "top": 20,
+    "right": 20,
+    "bottom": 20,
+    "left": 20,
+    "note": "Set clear space according to the approved brand guideline. Measurements are percentages of the visible logo bounds."
+  },
+  "incorrect": {
+    "variation": "",
+    "perExample": {}
+  },
+  "guidelineNote": ""
+}

@@ -1,0 +1,278 @@
+{
+  "id": "fuze-cafe",
+  "name": "Fuze Cafe",
+  "variations": [
+    {
+      "id": "cream-logo",
+      "name": "Cream Logo",
+      "files": [
+        {
+          "name": "fuze-logo-cream.png",
+          "path": "assets/logos/cream-logo/fuze-logo-cream.png",
+          "format": "PNG"
+        }
+      ],
+      "preview": "PNG"
+    },
+    {
+      "id": "black-logo",
+      "name": "Black Logo",
+      "files": [
+        {
+          "name": "fuze-logo-black.png",
+          "path": "assets/logos/black-logo/fuze-logo-black.png",
+          "format": "PNG"
+        }
+      ],
+      "preview": "PNG"
+    },
+    {
+      "id": "white-logo",
+      "name": "White Logo",
+      "files": [
+        {
+          "name": "fuze-logo-white.png",
+          "path": "assets/logos/white-logo/fuze-logo-white.png",
+          "format": "PNG"
+        }
+      ],
+      "preview": "PNG"
+    }
+  ],
+  "colors": [
+    {
+      "name": "Terracotta",
+      "hex": "#B87567"
+    },
+    {
+      "name": "Warm Cream",
+      "hex": "#FFE2B0"
+    },
+    {
+      "name": "Black",
+      "hex": "#111111"
+    },
+    {
+      "name": "White",
+      "hex": "#FFFFFF"
+    }
+  ],
+  "fonts": [
+    {
+      "id": "montserrat",
+      "name": "Montserrat",
+      "role": "Primary",
+      "usage": "Headings",
+      "files": [
+        {
+          "name": "Montserrat-Arabic-Bold.ttf",
+          "path": "assets/fonts/montserrat/Montserrat-Arabic-Bold.ttf",
+          "format": "TTF"
+        },
+        {
+          "name": "Montserrat-VariableFont_wght.ttf",
+          "path": "assets/fonts/montserrat/Montserrat-VariableFont_wght.ttf",
+          "format": "TTF"
+        },
+        {
+          "name": "MontserratAlternates-Black.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Black.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-BlackItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-BlackItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Bold.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Bold.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-BoldItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-BoldItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-ExtraBold.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-ExtraBold.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-ExtraBoldItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-ExtraBoldItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-ExtraLight.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-ExtraLight.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-ExtraLightItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-ExtraLightItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Italic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Italic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Light.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Light.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-LightItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-LightItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Medium.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Medium.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-MediumItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-MediumItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Regular.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Regular.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-SemiBold.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-SemiBold.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-SemiBoldItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-SemiBoldItalic.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-Thin.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-Thin.otf",
+          "format": "OTF"
+        },
+        {
+          "name": "MontserratAlternates-ThinItalic.otf",
+          "path": "assets/fonts/montserrat/MontserratAlternates-ThinItalic.otf",
+          "format": "OTF"
+        }
+      ]
+    },
+    {
+      "id": "inter",
+      "name": "Inter",
+      "role": "Secondary",
+      "usage": "Body text",
+      "files": [
+        {
+          "name": "Inter-VariableFont_slnt,wght.ttf",
+          "path": "assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf",
+          "format": "TTF"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "id": "icon-1",
+      "files": [
+        {
+          "name": "fuze-icon-1.png",
+          "path": "assets/icons/fuze-icon-1.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-2",
+      "files": [
+        {
+          "name": "fuze-icon-2.png",
+          "path": "assets/icons/fuze-icon-2.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-3",
+      "files": [
+        {
+          "name": "fuze-icon-3.png",
+          "path": "assets/icons/fuze-icon-3.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-4",
+      "files": [
+        {
+          "name": "fuze-icon-4.png",
+          "path": "assets/icons/fuze-icon-4.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-5",
+      "files": [
+        {
+          "name": "fuze-icon-5.png",
+          "path": "assets/icons/fuze-icon-5.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-6",
+      "files": [
+        {
+          "name": "fuze-icon-6.png",
+          "path": "assets/icons/fuze-icon-6.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-7",
+      "files": [
+        {
+          "name": "fuze-icon-7.png",
+          "path": "assets/icons/fuze-icon-7.png",
+          "format": "PNG"
+        }
+      ]
+    },
+    {
+      "id": "icon-8",
+      "files": [
+        {
+          "name": "fuze-icon-8.png",
+          "path": "assets/icons/fuze-icon-8.png",
+          "format": "PNG"
+        }
+      ]
+    }
+  ],
+  "safe": {
+    "variation": "cream-logo",
+    "top": 20,
+    "right": 20,
+    "bottom": 20,
+    "left": 20,
+    "note": "Set clear space according to the approved brand guideline. Measurements are percentages of the visible logo bounds."
+  },
+  "incorrect": {
+    "variation": "cream-logo",
+    "perExample": {}
+  },
+  "guidelineNote": ""
+}

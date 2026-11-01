@@ -1,0 +1,55 @@
+{
+  "id": "babiole",
+  "name": "Babiole",
+  "variations": [
+    {
+      "id": "primary",
+      "name": "Primary Logo",
+      "files": [
+        {
+          "name": "babiole-logo-original.png",
+          "path": "assets/logos/primary/babiole-logo-original.png",
+          "format": "PNG"
+        }
+      ],
+      "preview": "PNG"
+    }
+  ],
+  "colors": [
+    {
+      "name": "Gold",
+      "hex": "#D6AE28"
+    },
+    {
+      "name": "Wine",
+      "hex": "#5F363F"
+    },
+    {
+      "name": "White",
+      "hex": "#FFFFFF"
+    }
+  ],
+  "fonts": [
+    {
+      "id": "arrow",
+      "name": "Arrow / TF Arrow",
+      "role": "Primary",
+      "usage": "Brand typography",
+      "files": []
+    }
+  ],
+  "icons": [],
+  "safe": {
+    "variation": "primary",
+    "top": 20,
+    "right": 20,
+    "bottom": 20,
+    "left": 20,
+    "note": "Set clear space according to the approved brand guideline. Measurements are percentages of the visible logo bounds."
+  },
+  "incorrect": {
+    "variation": "primary",
+    "perExample": {}
+  },
+  "guidelineNote": "Official Babiole guideline: clear space on page 5; incorrect usage on page 6; minimum logo size 20 mm print / 85 px digital on page 8."
+}
