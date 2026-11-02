@@ -1,23 +1,26 @@
-# DESIGN CTRL_ v4.1
+# DESIGN CTRL_ v4.2
 
-GitHub Pages website with Firebase Authentication and Cloud Firestore for **editable settings only**. No Firebase Storage, no in-browser file uploads, no billing required within Spark free-tier limits. Brand assets remain bundled in the GitHub repository.
+## What changed
+- File uploads and file import controls are removed from the website. Assets are maintained in the GitHub repository and updated via future ChatGPT-built ZIP releases.
+- The existing outlet logos, fonts, icons, guidelines and downloadable assets are retained.
+- Authorized administrators can edit brand colors (including add, remove and reorder), logo variation labels/order, clear-space guidance, incorrect-use settings, typography labels/hierarchy, and icon order. File bytes cannot be edited or uploaded in the website.
+- Public visitors can browse and download without signing in.
+- Firestore real-time subscription loads published settings for all visitors, and admin Save to Firebase publishes updates. Settings are saved to **`outlets/{outlet-slug}`**. The previous v4.1 client used `brands/{outlet-slug}`, which did not match the rules provided in the conversation and could cause failed synchronization.
 
-## Deploy to GitHub Pages
-Extract the ZIP, then upload the **contents of `design-ctrl-v4.1/`** to the root of your GitHub Pages repository. Keep `index.html`, `js/`, `css/`, `outlets/`, and `firebase/` at the same level. Commit and wait for deployment.
+## Deploy
+1. Extract the ZIP and upload the **contents** of `design-ctrl-v4.2/` to the root of your GitHub Pages repository, replacing v4.1. `index.html` must be at the root.
+2. In Firebase Console for project `design-ctrl`, open **Firestore Database > Rules**. Compare the existing rules with `firebase/firestore.rules` in this ZIP. Publish the supplied rules if they differ. They allow public read of `outlets` and restrict writes to authorized admins.
+3. In **Authentication > Settings > Authorized domains**, confirm your GitHub Pages hostname is listed. Google provider must be enabled.
+4. Confirm your Firestore `admins/{YOUR_AUTH_UID}` document contains the exact field `role` (string) = `admin`.
+5. Open the deployed Fuze Cafe page, open Settings, sign in as Admin, edit a color name and click **Save to Firebase**. Confirm the success status, then check **Firestore Database > Data > outlets > fuze-cafe** for the saved `settings.colors` value. Refresh in a private browser or on a coworker's device to verify the change appears without sign-in.
+6. Restore the original test value and save again.
 
-## Firebase setup (project `design-ctrl`)
-1. Firebase Console > Authentication > Sign-in method: enable Google. Set support email.
-2. Authentication > Settings > Authorized domains: add `devatomicgeek.github.io` (the hostname, not the full URL).
-3. Firestore Database: create the default database if not already created.
-4. Firestore Database > Rules: replace rules with `firebase/firestore.rules` and click **Publish**. Do not enable public writes.
-5. On the deployed website, open an outlet > Settings > **Admin sign in**. Sign in using Google. The interface will show your UID while read-only. You can also copy the UID from Firebase Authentication > Users.
-6. In Firestore Database > Data, create collection `admins`, document ID equal to your **exact UID**, field `role` (string) = `admin`. This bootstrap record is created manually in Firebase Console by the project owner, not through the website.
-7. Refresh the outlet page and sign in again if needed. The interface should display Administrator and allow editing. Change a color name, click **Save to Firebase**, and verify in another browser/device.
+## Important about previous edits
+v4.2 reads and writes `outlets/{slug}`. If a previous v4.1 deployment successfully wrote settings to `brands/{slug}`, those old documents are **not automatically migrated**. Copy needed metadata manually before editing in v4.2. Files and artwork are unaffected.
 
-## Access
-Public users can view and download files without login. Google login alone **does not** grant editing. Only a UID with `admins/{uid}.role == 'admin'` may write brand settings, as enforced by Firestore security rules.
-
-## Asset workflow
-To add, replace, or remove a logo/font/icon file, update the packaged outlet assets and its `data/brand.json` and outlet HTML through ChatGPT, then manually deploy the changed website files to GitHub. Cloud settings can rename/reorder existing asset entries but cannot upload or create assets. Firestore holds only editable metadata; it does not store file bytes or base64.
-
-**Note:** Firebase SDK modules load from Google's CDN and require internet access. The website has not been live-tested against your Firebase account; publish the rules and test authentication and permissions before relying on it. Firebase free-tier quotas apply.
+## Security and limitations
+- Firebase web config is public by design. Firestore rules, not hidden API keys, enforce permissions.
+- Google sign-in alone does not grant editing. Only users in `admins` with `role: admin` may write.
+- GitHub Pages and asset files are public to anyone with the website URL.
+- Firebase SDK requires internet. Firestore updates depend on network access and project quotas.
+- Code syntax and bundled asset references can be checked locally; **live Firebase sign-in and cross-device synchronization must be tested on the deployed site**.

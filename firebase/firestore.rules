@@ -1,15 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
- match /databases/{database}/documents {
-  function isAdmin() {return request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';}
-  match /brands/{brandId} {
-   allow read: if true;
-   allow create, update: if isAdmin() && request.resource.data.keys().hasOnly(['settings','updatedAt','updatedBy']) && request.resource.data.updatedBy == request.auth.uid && request.resource.data.settings is map;
-   allow delete: if false;
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+    match /outlets/{outletId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['settings', 'updatedAt', 'updatedBy'])
+        && request.resource.data.settings is map
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
-  match /admins/{uid} {
-   allow get: if request.auth != null && request.auth.uid == uid;
-   allow list, create, update, delete: if false;
-  }
- }
 }
