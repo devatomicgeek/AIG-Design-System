@@ -6,7 +6,7 @@
   function apply(mode){
     document.documentElement.setAttribute('data-theme',mode);
     var button=document.querySelector('.theme-toggle');
-    if(button){button.textContent=mode==='dark'?'☀ Light mode':'☾ Dark mode';button.setAttribute('aria-label','Switch to '+(mode==='dark'?'light':'dark')+' mode');button.setAttribute('aria-pressed',String(mode==='dark'))}
+    if(button){button.textContent=mode==='dark'?'☀':'☾';button.setAttribute('aria-label','Switch to '+(mode==='dark'?'light':'dark')+' mode');button.setAttribute('aria-pressed',String(mode==='dark'))}
   }
   apply(stored()==='dark'?'dark':'light');
   document.addEventListener('DOMContentLoaded',function(){

@@ -1,25 +1,40 @@
-# Design System v3.9
+# DESIGN CTRL_ v4.0
 
-Static, GitHub Pages-ready brand library for 10 outlets. Open `index.html` locally, or publish the **contents** of this folder to the root of a GitHub repository and enable GitHub Pages (main branch, root). Links are relative.
+Accenture Investment Group · Brand Library · 10 outlets.
 
-## Outlet settings
+## IMPORTANT: Firebase connection is not activated yet
 
-Open an outlet and click **Settings** at the top right. Edit logo variations and their formats, clear space, incorrect-usage logo selection, colors, font families/ZIPs and hierarchy, and icons. Each outlet is independent. Icons have no visible labels. Settings are saved in the current browser using localStorage; uploads are stored as data URLs, so very large files can exceed browser storage limits. Use **Export changes ZIP** frequently to preserve edits. ZIP font uploads extract TTF, OTF, WOFF and WOFF2, and display actual font previews where supported.
+The website includes working Firebase Authentication, Firestore listeners, Storage uploads, and a Save to Firebase action, but **you must connect your own Firebase project** before cross-device syncing will work. Do not claim that uploaded files are shared until this setup is completed and tested.
 
-**GitHub Pages is static**: changing Settings does not automatically change the deployed site or other visitors' views. To publish changes:
+1. In Firebase Console, create or select your project, register a **Web app**, and copy its web configuration into `js/firebase-config.js`. The web config is public, but NEVER commit service-account credentials or private keys.
+2. Enable **Authentication > Sign-in method > Google**. Under Authentication > Settings > Authorized domains, add your GitHub Pages domain (e.g. `devatomicgeek.github.io`). Localhost may need to be added explicitly for development.
+3. Create a **Cloud Firestore** database, then publish the rules from `firebase/firestore.rules` in Firestore > Rules.
+4. Enable **Cloud Storage**. Firebase Storage may require the Blaze billing plan even for usage within no-cost allowances. Publish `firebase/storage.rules` in Storage > Rules. Check your actual Storage bucket ID from Firebase Console.
+5. Sign in to the deployed site once using the **Admin sign in** button. Get your account's UID in Firebase Authentication > Users. In Firestore Console, create a document at `admins/YOUR_UID` (any field such as `enabled: true`). The document ID must be the exact UID. Sign out and back in. **Only administrators with a document in `admins` can save**. The security rules prevent other users from writing even if they manipulate the UI.
+6. Deploy the **contents** of this folder to GitHub Pages. Open each outlet's Settings, sign in, and click **Save to Firebase** once to publish its initial data. This is needed once per outlet to seed the cloud. After that, uploads and settings saved by an editor appear on other devices via live Firestore listeners. Original assets from the ZIP remain locally hosted unless replaced/uploaded.
+7. Test with a second browser/device. Confirm one account can edit, a non-admin cannot, uploads persist after reload, and downloads work.
 
-1. In the outlet's Settings, click **Export changes ZIP**.
-2. Extract this website folder to your computer.
-3. With Python 3 installed, run `python tools/apply_brand_update.py /path/to/fuze-cafe-brand-update.zip` from anywhere. The script uses its own location to find the website folder.
-4. Commit and push the updated website folder to GitHub Pages. Other visitors will now see the updated assets and configuration.
+### How synchronization works
 
-You can also **Import ZIP** into an outlet's Settings to restore a previously exported package locally.
+Editors upload or edit content in Settings, then press **Save to Firebase**. New files are uploaded to Firebase Storage, and Firestore stores references and metadata, not large base64 file contents. Every open outlet page subscribes to that outlet's Firestore document and updates when the document changes. Uploads are **not** shared until Save completes. The website can remain on GitHub Pages. Public assets and brand data are readable without sign-in; do not upload confidential material. The first deployment requires internet connectivity for Firebase's official JavaScript SDK.
 
-## Important notes
+**Limitations:** This is a v4.0 integration package, not a configured live backend. There is no automatic conflict resolution for simultaneous editors: last successful save wins. Deleting an asset removes it from the library but does not automatically delete older Storage objects, so Storage cleanup should be done periodically. Existing local export/import remains as a backup. The site does not manage Firebase projects or billing automatically.
 
-- Original uploaded logo artwork is not altered. Incorrect-usage previews apply browser-only CSS transformations to demonstrate what not to do.
-- Clear-space controls are *visual guidance*, not a replacement for official brand measurements. Existing values are editable starting examples and should be confirmed against each brand's official guidelines.
-- The Babiole PDF remains available in `outlets/babiole/assets/guidelines/` and its Arrow fonts are **not included**, because original font files were not supplied.
-- Some browsers restrict local file access and clipboard operations under `file://`. For the most consistent experience, serve the folder locally with `python -m http.server 8000`, then visit `http://localhost:8000/`.
-- ZIP extraction and ZIP generation use a bundled JSZip library and do not require a network connection.
-- Verify you have the appropriate licenses before publishing fonts or other assets.
+### Other v4.0 changes
+
+- Homepage company heading: ACCENTURE INVESTMENT GROUP on one line, Brand Library below. Footer: DESIGN CTRL_ · V4.0.
+- Full brand-color cards for Fuze Cafe and Babiole; other outlets retain placeholders pending official palettes.
+- Sun/moon icon-only toggle fixed to the bottom-right; decorative hero circles aligned to the right edge.
+- Text-only outlet headings, safe-area reference-width pixel guidance, responsive color/typography/icon editors.
+- Original font ZIP retained as a single downloadable package; extracted fonts support previews. Icon download opens a format chooser.
+- Layout uses responsive breakpoints for mobile/tablet/desktop. Verify in actual browsers before production use.
+
+### Local testing
+
+Use a local server rather than `file://`:
+
+```bash
+python -m http.server 8000
+```
+
+Open `http://localhost:8000`. Without a real Firebase config, the library still displays its bundled brand assets, but the cloud save buttons remain disabled.
