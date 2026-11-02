@@ -1,52 +1,67 @@
 import {firebaseConfig} from './firebase-config.js';
-const $=id=>document.getElementById(id);
-const ctrl=window.DesignCtrl;
+const $=id=>document.getElementById(id), ctrl=window.DesignCtrl;
 if(ctrl){
- const login=$('cloudLogin'),save=$('cloudSave'),identity=$('cloudIdentity');
- const configured=firebaseConfig.apiKey&&!firebaseConfig.apiKey.startsWith('REPLACE_');
- if(!configured){identity.textContent='Firebase setup required · See README';save.disabled=true;login.disabled=true}
- else{
-  try{
-   const [{initializeApp},{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut},{getFirestore,doc,onSnapshot,getDoc,setDoc,serverTimestamp},{getStorage,ref,uploadBytes,getDownloadURL}]=await Promise.all([
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js'),
-    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js')
-   ]);
-   const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
-   const brandDoc=doc(db,'brands',ctrl.slug);
-   let admin=false,loading=false;
-   function controls(){save.disabled=!admin||loading;login.textContent=auth.currentUser?'Sign out':'Admin sign in'}
-   onAuthStateChanged(auth,async user=>{
-    admin=false;
-    if(user){try{admin=(await getDoc(doc(db,'admins',user.uid))).exists()}catch(err){console.warn('Admin check failed',err)}}
-    identity.textContent=user?(user.email+(admin?' · Editor':' · Read-only')):'Public view · Sign in to edit';controls();
-   });
-   login.onclick=async()=>{try{if(auth.currentUser){await signOut(auth);return}await signInWithPopup(auth,new GoogleAuthProvider())}catch(err){ctrl.toast('Sign-in failed: '+err.message)}};
-   onSnapshot(brandDoc,snapshot=>{if(snapshot.exists()){
-    let data=snapshot.data().content;
-    if(data){ctrl.applyRemote(data);if(!window.DesignCtrlDirty)ctrl.status('Firebase connected · Live updates enabled')}
-   }else if(!window.DesignCtrlDirty){ctrl.status('Firebase connected · Publish initial brand data to share')}},err=>{ctrl.status('Firebase read failed: '+err.message)});
-   const decode=data=>{let [meta,payload]=data.split(',');let binary=atob(payload),arr=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)arr[i]=binary.charCodeAt(i);return new Blob([arr],{type:(meta.match(/data:([^;]+)/)||[])[1]||'application/octet-stream'})};
-   save.onclick=async()=>{
-    if(!admin||loading)return;
-    loading=true;controls();let data=ctrl.getState();
-    try{
-     ctrl.status('Uploading assets to Firebase Storage…');
-     for(let group of ['variations','fonts','icons'])for(let item of data[group]||[])for(let f of item.files||[]){
-      if(!f.data)continue;
-      let objectPath='brands/'+ctrl.slug+'/'+group+'/'+item.id+'/'+Date.now()+'-'+crypto.randomUUID()+'/'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-      let objectRef=ref(storage,objectPath);
-      await uploadBytes(objectRef,decode(f.data),{contentType:(f.data.match(/^data:([^;]+)/)||[])[1]||'application/octet-stream'});
-      f.url=await getDownloadURL(objectRef);f.storagePath=objectPath;delete f.data;
-     }
-     ctrl.status('Publishing shared brand settings…');
-     await setDoc(brandDoc,{content:data,updatedAt:serverTimestamp(),updatedBy:auth.currentUser.uid});
-     // Replace local data URLs with remote URLs after successful publish.
-     window.DesignCtrlDirty=false;ctrl.applyRemote(data);ctrl.markSynced();ctrl.toast('Saved to Firebase · Coworkers will see the update');
-    }catch(err){ctrl.status('Save failed · '+err.message);ctrl.toast('Firebase save failed: '+err.message)}finally{loading=false;controls()}
-   };
+ const login=$('cloudLogin'), save=$('cloudSave'), identity=$('cloudIdentity');
+ save.disabled=true; login.disabled=true;
+ try {
+  const [{initializeApp},{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut},{getFirestore,doc,onSnapshot,getDoc,setDoc,serverTimestamp}]=await Promise.all([
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
+   import('https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js')
+  ]);
+  const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+  const brandDoc=doc(db,'brands',ctrl.slug);let admin=false,busy=false;
+  function controls(){login.disabled=false;save.disabled=!admin||busy;login.textContent=auth.currentUser?'Sign out':'Admin sign in';ctrl.setEditor(admin)}
+  onAuthStateChanged(auth,async user=>{
+   admin=false;controls();
+   if(user){try{const d=await getDoc(doc(db,'admins',user.uid));admin=d.exists()&&d.data().role==='admin'}catch(err){console.warn('Admin lookup:',err)}}
+   identity.textContent=user?user.email+(admin?' · Administrator':' · Read-only · UID: '+user.uid):'Public view · Sign in to edit';
    controls();
-  }catch(err){identity.textContent='Firebase initialization failed';save.disabled=true;console.error(err)}
- }
+  });
+  login.onclick=async()=>{try{if(auth.currentUser){await signOut(auth)}else{await signInWithPopup(auth,new GoogleAuthProvider())}}catch(err){ctrl.toast('Google sign-in failed: '+err.message);identity.textContent='Sign-in error: '+err.code}};
+  // Only editable metadata is stored in Firestore. GitHub remains the sole asset source.
+  const editable=data=>({
+   colors:data.colors,
+   safe:data.safe,
+   incorrect:data.incorrect,
+   guidelineNote:data.guidelineNote||'',
+   variationOrder:data.variations.map(v=>({id:v.id,name:v.name})),
+   fontSettings:data.fonts.map(f=>({id:f.id,name:f.name,role:f.role,usage:f.usage})),
+   iconOrder:data.icons.map(ic=>ic.id)
+  });
+  const merge=(local,remote)=>{
+   const d=structuredClone(local);
+   if(Array.isArray(remote.colors))d.colors=remote.colors;
+   if(remote.safe)d.safe=remote.safe;
+   if(remote.incorrect)d.incorrect=remote.incorrect;
+   if(typeof remote.guidelineNote==='string')d.guidelineNote=remote.guidelineNote;
+   if(Array.isArray(remote.variationOrder)){
+    const m=new Map(d.variations.map(v=>[v.id,v]));
+    d.variations=remote.variationOrder.map(v=>{let orig=m.get(v.id);if(!orig)return null;m.delete(v.id);return {...orig,name:v.name||orig.name}}).filter(Boolean).concat([...m.values()]);
+   }
+   if(Array.isArray(remote.fontSettings)){
+    const m=new Map(d.fonts.map(f=>[f.id,f]));
+    d.fonts=remote.fontSettings.map(f=>{let orig=m.get(f.id);if(!orig)return null;m.delete(f.id);return {...orig,name:f.name||orig.name,role:f.role||orig.role,usage:f.usage??orig.usage}}).filter(Boolean).concat([...m.values()]);
+   }
+   if(Array.isArray(remote.iconOrder)){
+    const m=new Map(d.icons.map(i=>[i.id,i]));
+    d.icons=remote.iconOrder.map(id=>{let orig=m.get(id);m.delete(id);return orig}).filter(Boolean).concat([...m.values()]);
+   }
+   return d;
+  };
+  // Use immutable bundled file paths as the base even when Firestore data changes.
+  const original=ctrl.getState();
+  onSnapshot(brandDoc,snap=>{
+   if(snap.exists()&&snap.data().settings){ctrl.applyRemote(merge(original,snap.data().settings));if(!window.DesignCtrlDirty)ctrl.status('Firebase connected · Shared settings loaded')}
+   else if(!window.DesignCtrlDirty)ctrl.status('Firebase connected · No published settings yet');
+  },err=>{ctrl.status('Firestore read failed: '+err.message)});
+  save.onclick=async()=>{
+   if(!admin||busy)return;busy=true;controls();ctrl.status('Saving shared settings…');
+   try{await setDoc(brandDoc,{settings:editable(ctrl.getState()),updatedAt:serverTimestamp(),updatedBy:auth.currentUser.uid});
+    window.DesignCtrlDirty=false;ctrl.markSynced();ctrl.toast('Settings saved · Shared across devices');
+   }catch(err){ctrl.status('Save failed: '+err.message);ctrl.toast('Save failed: '+err.message)}
+   finally{busy=false;controls()}
+  };
+  controls();
+ }catch(err){identity.textContent='Firebase failed to load: '+err.message;console.error(err)}
 }

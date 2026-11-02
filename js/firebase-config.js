@@ -1,10 +1,9 @@
-/* Paste the WEB APP configuration from Firebase Console > Project settings > Your apps.
-   This client-side config is not a secret. Never place service-account keys here. */
+// Public Firebase web configuration. No service-account credentials belong here.
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_FIREBASE_API_KEY",
-  authDomain: "REPLACE_WITH_PROJECT_ID.firebaseapp.com",
-  projectId: "REPLACE_WITH_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_STORAGE_BUCKET",
-  messagingSenderId: "REPLACE_WITH_MESSAGING_SENDER_ID",
-  appId: "REPLACE_WITH_APP_ID"
+ apiKey: "AIzaSyCM3YTl9YqQkGoVWpt8G0S9IFDp6WEfE0E",
+ authDomain: "design-ctrl.firebaseapp.com",
+ projectId: "design-ctrl",
+ storageBucket: "design-ctrl.firebasestorage.app",
+ messagingSenderId: "75682217368",
+ appId: "1:75682217368:web:07595bf7524c4322023fed"
 };
